@@ -117,7 +117,7 @@ model function mymodel(symbiont_tree: TreeLabeled, ntips: Int, nhosts: Int, inte
   if !valid_root { 
     weight 0.0; 
     resample;
-  } 
+  } .
  
   let log_score_root = - ( log( (3.0 ^ Real(nhosts)) - (2.0 ^ Real(nhosts)) ) );
 

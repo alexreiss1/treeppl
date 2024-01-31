@@ -9,23 +9,35 @@ include "ext/matrix-ext.mc"
 include "iterator.mc"
 include "ext/dist-ext.mc"
 include "seq.mc"
+<<<<<<< HEAD
+
+let error = error
+=======
+>>>>>>> mariana/main
 
 let error = error
 
+let subf = subf
 let muli = muli
-let eqi = eqi
-let neqi = neqi
 let addi = addi
 let subi = subi
+let eqi = eqi
+let neqi = neqi
+let geqi = geqi
+let gti = gti
 
 let slice = lam seq. lam beg. lam mend.
     subsequence seq (subi beg 1) (subi mend beg)
+<<<<<<< HEAD
     
 let geqi = geqi
 let gti = gti
 let addi = addi
 let subi = subi
 let subf = subf
+=======
+
+>>>>>>> mariana/main
 
 ----------------------------
 --- Printing and strings ---
@@ -75,6 +87,15 @@ let qSort = lam f. lam seq.
   quickSort f seq
 
 let any = any
+<<<<<<< HEAD
+=======
+
+let zipWith = zipWith
+
+-- sapply1 for passing 1 argument (a) to function f
+let sapply1 = lam x. lam f. lam a.
+  map (lam e. f e a) x
+>>>>>>> mariana/main
 
 -- switching the order of map to make it more R-like
 -- the "etymology" should be understood as 
@@ -118,10 +139,19 @@ let sbool2string = lam seq.
 let rep = make
 
 -- Sequence normalization
+<<<<<<< HEAD
 let normalizeSeq = lam seq.
   let sum = foldl addf 0. seq in
   map (lam f. divf f sum) seq
 
+=======
+let seqNormalize = lam seq.
+  let sum = foldl addf 0. seq in
+  map (lam f. divf f sum) seq
+
+utest seqNormalize [1.0, 1.0] with [0.5, 0.5] using (eqSeq eqf)
+
+>>>>>>> mariana/main
 -- Find elements of a sequence that are true
 let whichTrue = lam elems. 
   foldli (lam acc. lam i. lam x. if x then snoc acc (addi i 1) else acc) [] elems
@@ -132,9 +162,23 @@ utest whichTrue [false, false, false] with []
 utest whichTrue [] with []
 
 -- Sum all elements of a sequence
+<<<<<<< HEAD
 let sumReal = lam seq.
   foldl (lam acc. lam x. addf acc x) 0.0 seq
 
+=======
+let seqSumReal = lam seq.
+  foldl (lam acc. lam x. addf acc x) 0.0 seq
+
+utest seqSumReal [1., 2., 3., 4., 5.] with divf (mulf 5. 6.) 2. using eqf
+
+-- Sum all elements of a sequence (int)
+let seqSumInt = lam seq.
+  foldl (lam acc. lam x. addi acc x) 0 seq
+
+utest seqSumInt [1, 2, 3, 4, 5] with 15 using eqi
+
+>>>>>>> mariana/main
 
 ---------------
 --- Tensors ---
@@ -150,9 +194,15 @@ let mtxSclrMul = matrixMulFloat
 
 let mtxAdd = matrixElemAdd
 
+let mtxElemMul = matrixElemMul
+
 let mtxTrans = matrixTranspose
 
 let mtxExp = matrixExponential
+
+let mtxGetRow = lam row. lam tensor.
+  let r = subi row 1 in
+  tensorSubExn tensor r 1
 
 -- we cannot change the function parametrization and keep the same name
 -- will bring confusion
@@ -167,11 +217,17 @@ let mtxCreateId = lam dim.
 utest tensorToSeqExn (tensorSliceExn (mtxCreateId 2) [0]) with [1., 0.] using (eqSeq eqf)
 utest tensorToSeqExn (tensorSliceExn (mtxCreateId 2) [1]) with [0., 1.] using (eqSeq eqf)
 
+utest tensorToSeqExn (tensorSliceExn (mtxCreateId 3) [0]) with [1., 0., 0.] using (eqSeq eqf)
+utest tensorToSeqExn (tensorSliceExn (mtxCreateId 3) [1]) with [0., 1., 0.] using (eqSeq eqf)
+
+
 -- matrix exponentiation
 recursive
   let mtxPow = lam mtx: Tensor[Float]. lam pow: Int.
-    if eqi pow 0 then
-      mtxCreateId (tensorRank mtx) -- Assuming tensorRank gives the dimension of the matrix
+    if neqi (get (tensorShape mtx) 0) (get (tensorShape mtx) 1) then
+      error "Matrix must be square"
+    else if eqi pow 0 then
+      mtxCreateId (get (tensorShape mtx) 0) -- Assuming a squareMatrix
     else if eqi pow 1 then
       mtx
     else if eqi (modi pow 2) 0 then
@@ -189,6 +245,17 @@ let __test_43FS35GF: Tensor[Float] = mtxCreate 3 3 [
   4., 5., 6.,
   7., 8., 9.
 ]
+
+
+-- Test for exponent 0
+utest tensorToSeqExn (tensorSliceExn (mtxPow __test_43FS35GF 0) [0]) with [1., 0., 0.] using (eqSeq eqf)
+utest tensorToSeqExn (tensorSliceExn (mtxPow __test_43FS35GF 0) [1]) with [0., 1., 0.] using (eqSeq eqf)
+utest tensorToSeqExn (tensorSliceExn (mtxPow __test_43FS35GF 0) [2]) with [0., 0., 1.] using (eqSeq eqf)
+
+-- Test for exponent 1
+utest tensorToSeqExn (tensorSliceExn (mtxPow __test_43FS35GF 1) [0]) with [1., 2., 3.] using (eqSeq eqf)
+utest tensorToSeqExn (tensorSliceExn (mtxPow __test_43FS35GF 1) [1]) with [4., 5., 6.] using (eqSeq eqf)
+utest tensorToSeqExn (tensorSliceExn (mtxPow __test_43FS35GF 1) [2]) with [7., 8., 9.] using (eqSeq eqf)
 
 -- Test for exponent 2
 utest tensorToSeqExn (tensorSliceExn (mtxPow __test_43FS35GF 2) [0]) with [30., 36., 42.] using (eqSeq eqf)
@@ -231,6 +298,34 @@ let mtxRowCols = lam matrix. lam row. lam cols.
 -- Was commented out by Viktor, used now by Mariana
 let tensorMean = lam t.
   divf (tensorFold addf 0. t) (int2float (tensorSize t))
+<<<<<<< HEAD
+=======
+
+let __test_tesnor1: Tensor[Float] = mtxCreate 3 3 [
+    1., 1., 1.,
+    2., 2., 2.,
+    3., 3., 3.
+  ]
+
+utest tensorMean __test_tesnor1 with 2. using eqf
+
+-- Raises each element of a tensor to the power of the float argument
+let tensorElemPow = lam tensor. lam f.
+  tensorCreateCArrayFloat (tensorShape tensor) (lam i. pow (tensorGetExn tensor i) f)
+
+utest tensorToSeqExn (tensorSliceExn (tensorElemPow __test_tesnor1 2.) [0]) with [1., 1., 1.] using (eqSeq eqf)
+utest tensorToSeqExn (tensorSliceExn (tensorElemPow __test_tesnor1 2.) [1]) with [4., 4., 4.] using (eqSeq eqf)
+
+-- TODO(vsenderov, 2023-11-02): Unit tests have to be written, but beware of floating-point comparisons!
+-- Tensor normalization
+let tensorNormalize = lam v.
+  let sum = tensorFold addf 0. v in
+  tensorCreateCArrayFloat (tensorShape v) (lam i. divf (tensorGetExn v i) sum)
+
+let __test_tensor2: Tensor[Float] = rvecCreate 5 [1., 1., 1., 1., 1.]
+
+utest tensorToSeqExn (tensorSliceExn (tensorNormalize __test_tensor2) [0]) with [0.2, 0.2, 0.2, 0.2, 0.2] using (eqSeq eqf)
+>>>>>>> mariana/main
 
 -- NOTE(vsenderov, 23-10-01): Commenting two functions as they should not be
 -- used under 0-CFA
@@ -277,4 +372,35 @@ let messageElementPower = lam m. lam f.
 --  let sum = foldl addf 0. seq in
 --  map (lam f. divf f sum) seq
 
+<<<<<<< HEAD
    
+=======
+
+----------------
+--- Messages ---
+----------------
+
+-- NOTE(mariana, 2023-10-05): attempt to use functions Daniel wrote 
+-- to handle Messages, which are Tensor[Real][]
+
+-- Message normalization 
+let messageNormalize = lam m. 
+  map tensorNormalize m
+
+-- Elementwise multiplication of state likelihoods/probabilities
+let messageElemMul = zipWith matrixElemMul
+
+-- Raise each element of each sequence element to the Real power
+let messageElemPow = lam m. lam f. 
+    map (lam v. tensorElemPow v f) m
+
+let __test_message = [rvecCreate 2 [2., 3.], rvecCreate 2 [4., 5.]] 
+let __test_messageElemPow = messageElemPow __test_message 2.
+
+-- this test doesn't quite work -- we need to see how how do [0]
+utest tensorToSeqExn (tensorSliceExn (get __test_messageElemPow 0) [0]) with [4., 9.]
+  using (eqSeq eqf)
+
+utest tensorToSeqExn (tensorSliceExn (get __test_messageElemPow 1) [0]) with [16., 25.]
+  using (eqSeq eqf)
+>>>>>>> mariana/main
