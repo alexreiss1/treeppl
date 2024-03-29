@@ -1,0 +1,71 @@
+/* Hostgeo model 
+This file extends the host repertoire model described in Braga et al 2020 
+(https://doi.org/10.1093/sysbio/syaa019). As well as modelling the evolution of 
+the host repertoires of a set of related symbionts, the regional occurrences of 
+the symbionts are reconstructed and the possible host repertoires are 
+constrained according to whether hosts are present in the same region as a 
+given symbiont. 
+
+A first version of the model will make the following assumptions:
+
+1. Symbionts' geographic ranges must contain one, and no more than one, region. 
+Hence, range shifts can be described by a single event, rather than a gain of 
+one region followed by the loss of the other, and can be governed by a single 
+parameter.
+
+2. Symbionts do not shift between regions and between hosts simultaneously, 
+hence, they can only shift to regions that already contain an existing host.
+
+3. Hosts can occupy multiple regions, but not zero regions. Occupying multiple 
+regions is justifiable for analyses where hosts are analysed at a higher 
+taxonomic level than symbionts, and/or systems where barriers between regions 
+generate stricter isolation of symbionts than their hosts. Constraining hosts 
+to occupying a single region at a time would require either be relaxing 
+assumption (2), or else permitting simultaneous dispersal into a region of a 
+host plus associated symbionts - shifting between regions would otherwise be 
+impossible for symbionts. 
+
+4. Symbionts' host repertoires cannot be empty.
+
+4. The host and symbiont phylogenies are known exactly.
+
+5. Ancestral ranges of the symbionts can be accurately reconstructed from 
+present-day distributions (at least to the level of presence/absence for a 
+small number of regions).
+
+6. Ranges of hosts have not varied through the time period in which the 
+symbionts have existed. A priority to work on is allowing changes in the hosts' 
+geographic ranges (at which point the assumption is that ancestral ranges are 
+known exactly). The combination of (5) and (6) may be one of the most 
+restrictive factors affecting whether the model is applicable to a given study 
+system. 
+
+7. No extinction has occurred for the symbionts or hosts.  
+
+
+## In-data ##
+The model uses the same data inputs as the host repertoire, with the addition 
+of the hosts' and symbionts' occurrence in or absence from a set of geographic
+ regions as character data that can be associated with the trees' tips.
+
+
+## Model parameters ##
+In addition to those from the host repertoire model is the parameter gamma, 
+which governs the rate at which symbionts shift between regions. 
+
+## Overview of inference ##
+First, a history of symbionts' occurrences in different geographic regions is 
+reconstructed. The symbiont tree decorated with this reconstructed geo-history 
+is used for host repertoire inference, with inferred past repertoires required 
+to consist of host and symbiont pairs that co-occur. Parameter proposals for 
+host repertoire evolution are done with the independence model, and simulated 
+repertoires use the full model, where host phylogenetic distance modifies the 
+probability of gain of a new host. 
+
+
+*/
+
+
+
+
+
