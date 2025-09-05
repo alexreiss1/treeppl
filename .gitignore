@@ -3,4 +3,6 @@ out.mc
 .DS_Store
 tool
 build/
-
+figures/
+docs/images/
+docs/notes_for_250912.qmd
